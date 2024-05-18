@@ -17,13 +17,13 @@ def get_db():
         db.close()
 
 
-@app.post("/shorten")
+@app.post("/shorten", response_model=schemas.URLResponse)
 def create_short_url(url: schemas.URLCreate, db: Session = Depends(get_db)):
     short_url = crud.create_url(db, url)
     return {"short_url": short_url}
 
 
-@app.get("/{short_key}")
+@app.get("/{short_key}", response_model=None)
 def redirect_url(short_key: str, db: Session = Depends(get_db)):
     db_url = crud.get_url_by_short_key(db, short_key)
     if db_url is None:
@@ -31,7 +31,7 @@ def redirect_url(short_key: str, db: Session = Depends(get_db)):
     return RedirectResponse(db_url.origin_url, status_code=301)
 
 
-@app.get("/stats/{short_key}")
+@app.get("/stats/{short_key}", response_model=schemas.URLStats)
 def get_stats(short_key: str, db: Session = Depends(get_db)):
     db_url = crud.get_url_stats(db, short_key)
     if db_url is None:

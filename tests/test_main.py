@@ -36,7 +36,6 @@ def test_redirect_url(test_db):
     assert res.url == "https://github.com/"
     assert res.status_code == 301
 
-
 def test_get_url_stats(test_db):
     res = client.post("/shorten", json={"url": "https://git-scm.com/"})
     short_url = res.json()["short_url"]
@@ -45,6 +44,6 @@ def test_get_url_stats(test_db):
     client.get("/" + short_url)
 
     res = client.get("/stats/" + short_url)
-    data = res.json()
     assert res.status_code == 200
+    data = res.json()
     assert data["click_cnt"] == 3
