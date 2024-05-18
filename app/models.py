@@ -4,7 +4,7 @@ from .database import Base
 
 class URL(Base):
     __tablename__ = "urls"
-    short_url = Column(String, primary_key=True)
+    short_key = Column(String, primary_key=True)
     origin_url = Column(String, index=True)
     expires_at = Column(DateTime, nullable=True)
     click_cnt = Column(Integer, default=0)

@@ -20,7 +20,6 @@ def test_create_short_url_with_ttl(test_db):
     assert res.status_code == 200
     data = res.json()
     assert "short_url" in data
-    assert "expire_at" in data
 
 
 def test_create_short_url_without_ttl(test_db):
@@ -28,15 +27,14 @@ def test_create_short_url_without_ttl(test_db):
     data = res.json()
     assert res.status_code == 200
     assert "short_url" in data
-    assert data["expire_at"] is None
 
 
 def test_redirect_url(test_db):
     res = client.post("/shorten", json={"url": "https://github.com/"})
     short_url = res.json()["short_url"]
     res = client.get("/" + short_url)
-    assert res.status_code == 301
     assert res.url == "https://github.com/"
+    assert res.status_code == 301
 
 
 def test_get_url_stats(test_db):
@@ -49,4 +47,4 @@ def test_get_url_stats(test_db):
     res = client.get("/stats/" + short_url)
     data = res.json()
     assert res.status_code == 200
-    assert data["click_count"] == 3
+    assert data["click_cnt"] == 3

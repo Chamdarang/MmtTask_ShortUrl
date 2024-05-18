@@ -7,11 +7,11 @@ from . import models, schemas
 def create_url(db: Session, url: schemas.URLCreate):
     short_key = url_encode(str(url.url))
     ttl = None
-    if url.ttl:
-        ttl = datetime.utcnow()+timedelta(minutes=url.ttl)
-    db_url=models.URL(
+    if url.ttl and url.ttl > 0:
+        ttl = datetime.utcnow() + timedelta(minutes=url.ttl)
+    db_url = models.URL(
         origin_url=str(url.url),
-        short_url=short_key,
+        short_key=short_key,
         expires_at=ttl,
     )
     db.add(db_url)
@@ -20,8 +20,8 @@ def create_url(db: Session, url: schemas.URLCreate):
     return short_key
 
 
-def get_url_by_short_url(db: Session, short_url: str):
-    db_url = db.query(models.URL).get(short_url)
+def get_url_by_short_key(db: Session, short_key: str):
+    db_url = db.get(models.URL, short_key)
     if db_url and db_url.is_expired():
         db.delete(db_url)
         db.commit()
@@ -31,5 +31,6 @@ def get_url_by_short_url(db: Session, short_url: str):
         db.commit()
     return db_url
 
-def get_url_stats(db: Session, short_url: str):
-    return db.query(models.URL).get(short_url)
+
+def get_url_stats(db: Session, short_key: str):
+    return db.get(models.URL, short_key)
