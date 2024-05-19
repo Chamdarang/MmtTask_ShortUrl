@@ -20,7 +20,7 @@ def get_db():
 @app.post("/shorten", response_model=schemas.URLResponse)
 def create_short_url(url: schemas.URLCreate, db: Session = Depends(get_db), request: Request = Request):
     short_url = crud.create_url(db, url)
-    domain_url = request.url.hostname+":"+str(request.url.port)
+    domain_url = str(request.base_url)
 
     return {"short_url": domain_url+"/"+short_url}
 

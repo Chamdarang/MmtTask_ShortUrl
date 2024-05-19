@@ -19,7 +19,7 @@ class URL(BaseModel):
 
 
 class URLResponse(BaseModel):
-    short_url: str
+    short_url: HttpUrl
 
 
 class URLStats(BaseModel):
