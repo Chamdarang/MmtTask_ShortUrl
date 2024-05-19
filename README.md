@@ -25,30 +25,33 @@ NoSQL을 사용하지 않고 SQL(RDB)를 사용하기로 함.
 1. requirements.txt를 이용하여 필요 패키지 설치
 2. 'surl'을 이름으로 한 데이터베이스 생성 
 3. 루트 디렉토리에 .env파일을 생성하여 'DATABASE_URL'라는 이름으로 'surl'DB에 접속하는 postgreSQL 환경변수 설정  
-혹은 database.py의 8번줄에 직접 기입한 뒤 7, 5, 4번 줄 제거
+혹은 database.py의 7번줄에 직접 기입한 뒤 6, 4,3번 줄 제거
 4. 루트 디렉토리 기준 'uvicorn app.main:app'으로 실행
 
 ## API
-- create_short_url  
+※ 단축 URL 생성시에만 'shortened_url'이고 이후에는 'short_key'로 기재되어 있어  
+short_key를 기준으로 하되 생성시에만 URL을 리턴하도록 구현하였음  
+
+- create_short_url  - 단축주소 생성, 단축 키값이 포함된 URL 리턴. 숫자로 된 ttl값 전달 시 분 단위로 만료시간 적용  
 URI : /shorten  
 Method : POST  
 Request : {"url":str, "ttl":int(optional) }  
 Response : {"short_url": str} 
 
 
-- redirect_url  
+- redirect_url  - 원본 URL으로 리다이렉트  
 URI : /{short_key}  
 Method : GET  
 Request : short key: str  
 Response : Redirect / HTTPException
 
 
-- get_stats  
+- get_stats  - 클릭횟수와 원본 URL, 단축 키값 같은 해당 단축 키값의 정보 표시  
 URI : /stats/{short_key}  
 Method : GET  
 Request : short key: str  
 Response : { "origin_url": str, "short_key": str, "click_cnt": int }
 
 
-- swagger API Doc  
+- swagger API Doc  - FastAPI가 만든 swagger Doc
 URI : /docs
