@@ -25,7 +25,7 @@ def create_url(db: Session, url: schemas.URLCreate) -> str:
         except IntegrityError:
             db.rollback()
             continue  # 재시도
-    raise HTTPException(status_code=500, detail="Failed to generate unique short URL")
+    raise HTTPException(status_code=500, detail="Failed to generate unique short URL") # 10번 해도 실패
 
 def get_url_by_short_key(db: Session, short_key: str) -> models.URL or None:
     db_url = db.get(models.URL, short_key)
