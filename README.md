@@ -16,7 +16,7 @@ tests
 파이썬 버전: 3.10.6  
 사용 DB: PostgreSQL  
 데이터 구조가 확정되었고 기획 상 추가적인 변경·확장이 없을 예정이며  
-쿼리에 주로 활용하게 될 short_url의 unique한 특성으로 이를 PK삼을 경우 성능이 조금이나마 더 나을 것으로 예상되어  
+쿼리에 주로 활용하게 될 short_key의 unique한 특성은 PK로 삼을 수 있고, 이를 PK삼을 경우 성능이 조금이나마 더 나을 것으로 예상되어  
 NoSQL을 사용하지 않고 SQL(RDB)를 사용하기로 함.  
 프로젝트 규모를 봤을 때는 SQLite가 적합해 보이나 서비스의 특성을 고려했을 경우 만료시간 관련 datetime연산이 필요하고  
 많은 사용자가 동시에 접근 할 가능성이 높은 서비스이기에 동시성 처리성능이 필요해 보여 PostgreSQL을 채택함
@@ -37,17 +37,17 @@ Response : {"short_url": str}
 
 
 - redirect_url  
-URI : /{short_url}  
+URI : /{short_key}  
 Method : GET  
-Request : short url: str  
+Request : short key: str  
 Response : Redirect / HTTPException
 
 
 - get_stats  
-URI : /stats/{short_url}  
+URI : /stats/{short_key}  
 Method : GET  
-Request : short url: str  
-Response : { "origin_url": str, "short_url": str, "click_cnt": int }
+Request : short key: str  
+Response : { "origin_url": str, "short_key": str, "click_cnt": int }
 
 
 - swagger API Doc  
