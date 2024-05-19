@@ -12,7 +12,7 @@ def test_db():
     db = SessionLocal()
     yield db
     db.close()
-    Base.meatadata.drop_all(bind=engine)
+    Base.metadata.drop_all(bind=engine)
 
 
 def test_create_short_url_with_ttl(test_db):
@@ -31,19 +31,19 @@ def test_create_short_url_without_ttl(test_db):
 
 def test_redirect_url(test_db):
     res = client.post("/shorten", json={"url": "https://github.com/"})
-    short_url = res.json()["short_url"]
-    res = client.get("/" + short_url)
+    short_key = res.json()["short_url"].split("/")[-1]
+    res = client.get(short_key)
     assert res.url == "https://github.com/"
     assert res.status_code == 301
 
 def test_get_url_stats(test_db):
     res = client.post("/shorten", json={"url": "https://git-scm.com/"})
-    short_url = res.json()["short_url"]
-    client.get("/" + short_url)
-    client.get("/" + short_url)
-    client.get("/" + short_url)
+    short_key = res.json()["short_url"].split("/")[-1]
+    client.get(short_key)
+    client.get(short_key)
+    client.get(short_key)
 
-    res = client.get("/stats/" + short_url)
+    res = client.get("/stats/" + short_key)
     assert res.status_code == 200
     data = res.json()
     assert data["click_cnt"] == 3

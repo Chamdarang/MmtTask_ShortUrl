@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
@@ -18,9 +18,11 @@ def get_db():
 
 
 @app.post("/shorten", response_model=schemas.URLResponse)
-def create_short_url(url: schemas.URLCreate, db: Session = Depends(get_db)):
+def create_short_url(url: schemas.URLCreate, db: Session = Depends(get_db), request: Request = Request):
     short_url = crud.create_url(db, url)
-    return {"short_url": short_url}
+    domain_url = request.url.hostname+":"+str(request.url.port)
+
+    return {"short_url": domain_url+"/"+short_url}
 
 
 @app.get("/{short_key}", response_model=None)
